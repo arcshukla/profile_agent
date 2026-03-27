@@ -1,0 +1,9 @@
+requests
+python-dotenv
+gradio
+pymupdf
+openai
+openai-agents
+protobuf==3.20.3
+chromadb
+opentelemetry-exporter-otlp-proto-grpc

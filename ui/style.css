@@ -1,0 +1,471 @@
+/* ======================
+THEME — edit :root only to retheme the entire app.
+Every color in the file is a variable reference — nothing hardcoded below this block.
+====================== */
+
+:root {
+  /* Brand */
+  --color-primary:       #4f46e5;              /* main accent — borders, buttons, user bubble */
+  --color-primary-dark:  #4338ca;              /* hover and focus states */
+  --color-primary-glow:  rgba(79,70,229,0.15); /* soft focus ring shadow */
+
+  /* Backgrounds */
+  --color-bg:            #f8fafc;              /* page, chat area */
+  --color-bg-surface:    white;                /* header, input box, button fills */
+
+  /* Text */
+  --color-text:          #0f172a;              /* body text */
+  --color-text-dark:     #1e293b;              /* message text, labels */
+  --color-text-on-primary: white;              /* text on colored backgrounds (user bubble, hover) */
+
+  /* Borders */
+  --color-border:        #e2e8f0;              /* header divider */
+  --color-border-input:  gray;                 /* textarea inner border */
+
+  /* Chat bubbles */
+  --color-bubble-bot:    lightblue;            /* assistant bubble fill */
+  --color-bubble-user:   #4f46e5;              /* user bubble fill — usually matches primary */
+
+  /* Carousel — indigo→teal gradient theme */
+  --arc-bg-from:         #EEEDFE;              /* gradient start — lightest indigo */
+  --arc-bg-to:           #E1F5EE;              /* gradient end — lightest teal */
+  --arc-border:          #9FE1CB;              /* carousel border and dot inactive */
+  --arc-title:           #26215C;              /* slide title — darkest indigo */
+  --arc-body:            #085041;              /* slide body — darkest teal */
+  --arc-creds:           #0F6E56;              /* credentials line — mid teal */
+  --arc-dot-active:      #0F6E56;              /* active dot */
+  --arc-btn:             #0F6E56;              /* arrow button text */
+  --arc-quote:           #3C3489;              /* quote text — dark indigo */
+  --arc-attr:            #534AB7;              /* attribution — mid indigo */
+  --arc-sep:             #9FE1CB;              /* · separator in credentials */
+  --arc-btn-hover:       rgba(255,255,255,0.5);/* arrow hover fill */
+  --arc-dot-inactive:    #9FE1CB;              /* inactive dot */
+}
+
+/* ======================
+GLOBAL
+====================== */
+
+body, .gradio-container {
+  font-family: "Inter","Segoe UI",Roboto,Arial,sans-serif;
+  font-size: 16px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.gradio-container {
+  max-width: 1250px;
+  margin: auto;
+}
+
+/* ======================
+HIDE IMAGE TOOLBAR
+Using only stable selectors — no Svelte hash classes (e.g. svelte-phx28p)
+which change on every Gradio build.
+Strategy: hide any div that appears after the <figure> (the image element)
+inside the header, using the structural [data-testid] and sibling selectors
+which are tied to Gradio's public API, not its internal build output.
+If the toolbar reappears after a Gradio upgrade, inspect the DOM and add
+the new structural selector here — never copy a svelte-* class.
+====================== */
+
+/* Any overlay or toolbar div adjacent to the image figure */
+#header-bar figure + div,
+#header-bar figure ~ div,
+#header-bar [data-testid="image"] ~ div,
+#header-bar [data-testid="image"] + div {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Gradio's named icon button container — stable across versions */
+#header-bar .icon-button-wrapper {
+  display: none !important;
+}
+
+/* ======================
+STICKY HEADER
+====================== */
+
+#header-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--color-bg-surface);
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+/* Target the actual Gradio flex row inside the header — align columns to top */
+#header-bar > div,
+#header-bar > div > div {
+  align-items: flex-start !important;
+}
+
+/* Remove ALL Gradio block padding/border/shadow inside header */
+#header-bar .block,
+#header-bar .column,
+#header-bar .gap {
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  margin: 0 !important;
+}
+
+/* Constrain image */
+#header-bar [data-testid="image"] {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#header-bar figure {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#header-bar [data-testid="image"] img,
+#header-bar figure img {
+  max-height: 120px !important;
+  width: auto !important;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+#header-bar .html-container {
+  padding-top: 0 !important;
+}
+/* ======================
+CHAT CONTAINER
+Outer wrapper clips — scroll lives inside .bubble-wrap[role="log"].
+scroll-behavior: smooth intentionally absent — fights JS scrollTop.
+====================== */
+
+#chatbot {
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  padding: 15px;
+  background: var(--color-bg);
+  height: 480px;
+  overflow: hidden !important;
+}
+
+#chatbot [role="log"] {
+  overflow-y: auto !important;
+  height: 100% !important;
+  scroll-behavior: auto !important;
+}
+
+/* ======================
+MESSAGE STRUCTURE
+====================== */
+
+#chatbot .message-row {
+  width: 100% !important;
+}
+
+#chatbot .wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex;
+}
+
+/* shared bubble base */
+#chatbot .message {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+/* assistant bubble */
+#chatbot .message.assistant {
+  background: var(--color-bubble-bot);
+  border: 2px solid var(--color-primary);
+  max-width: 95% !important;
+  width: fit-content;
+  margin-right: auto;
+  color: var(--color-text-dark);
+}
+
+/* user bubble */
+#chatbot .message.user {
+  background: var(--color-bubble-user);
+  margin-left: auto;
+  max-width: 90% !important;
+  width: 100% !important;
+}
+
+#chatbot .message.user,
+#chatbot .message.user * {
+  color: var(--color-text-on-primary) !important;
+}
+
+/* ======================
+REMOVE EXTRA TEXT WRAP
+====================== */
+
+#chatbot p {
+  margin: 0;
+  white-space: normal;
+}
+
+/* ======================
+QUESTION INPUT
+====================== */
+
+#question-box {
+  border: 1px solid var(--color-primary) !important;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: var(--color-bg-surface);
+}
+
+#question-box textarea {
+  border: 1px solid var(--color-border-input) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  resize: none;
+  overflow-y: auto !important;
+  min-height: 28px;
+  line-height: 1.5;
+  font-size: 14px;
+  width: 100%;
+}
+
+#question-box [data-testid="block-info"],
+#question-box .label-container {
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.char-counter {
+  font-size: 12px;
+  color: #999;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.char-counter.warning {
+  color: #ffa500;
+  font-weight: 500;
+}
+
+.char-counter.critical {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+#question-box:focus-within {
+  border-color: var(--color-primary-dark) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+/* ======================
+FOLLOWUP BUTTONS
+====================== */
+
+#followups {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#followups button {
+  border-radius: 18px !important;
+  border: 1px solid var(--color-primary) !important;
+  background: var(--color-bg-surface) !important;
+  color: var(--color-primary) !important;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#followups button:hover {
+  background: var(--color-primary) !important;
+  color: var(--color-text-on-primary) !important;
+  transform: translateY(-2px);
+}
+
+/* ======================
+HEADER CAROUSEL
+====================== */
+
+.arc-hook {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0 0 3px;
+}
+
+.arc-hook-sub {
+  font-size: 15px;
+  color: var(--color-text-dark);
+  margin: 0 0 12px;
+}
+
+.arc-divider {
+  display: none !important;
+}
+
+.arc-wrap {
+  background: linear-gradient(135deg, var(--arc-bg-from) 0%, var(--arc-bg-to) 100%);
+  border: 0.5px solid var(--arc-border);
+  border-radius: 12px;
+  padding: 16px 16px 12px;
+}
+
+.arc-overflow {
+  overflow: hidden;
+}
+
+.arc-slides {
+  display: flex;
+  transition: transform 0.38s ease;
+}
+
+.arc-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  min-height: 55px;
+}
+
+.arc-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--arc-title);
+  margin: 0 0 5px;
+}
+
+.arc-body {
+  font-size: 12px;
+  color: var(--arc-body);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.arc-body-spaced {
+  margin-top: 6px;
+}
+
+.arc-creds {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--arc-creds);
+  margin: 0;
+}
+
+.arc-sep {
+  margin: 0 5px;
+  color: var(--arc-sep);
+  font-weight: 400;
+}
+
+.arc-quote {
+  font-size: 12px;
+  color: var(--arc-quote);
+  line-height: 1.65;
+  margin: 0 0 5px;
+  font-style: italic;
+}
+
+.arc-attr {
+  font-size: 11px;
+  color: var(--arc-attr);
+  margin: 0;
+}
+
+/* ── Nav row ── */
+.arc-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 0;
+  height: 28px;
+  line-height: 0;
+}
+
+/* ── Dots ── */
+.arc-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+}
+
+.arc-dots button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 6px !important;
+  height: 6px !important;
+  min-width: 6px !important;
+  min-height: 6px !important;
+  border-radius: 50% !important;
+  cursor: pointer;
+  flex-shrink: 0 !important;
+  display: block !important;
+  align-self: center;
+  transform-origin: center center;
+  background: var(--arc-dot-inactive) !important;
+  transition: background 0.2s, width 0.2s, height 0.2s;
+}
+
+.arc-dots button.active {
+  background: var(--arc-dot-active) !important;
+  width: 8px !important;
+  height: 8px !important;
+  min-width: 8px !important;
+  min-height: 8px !important;
+}
+
+/* ── Arrow buttons — HF-hardened with all:unset ── */
+.arc-wrap .arc-nav .arc-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: 0.5px solid var(--arc-border);
+  border-radius: 6px;
+  color: var(--arc-btn);
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s;
+  box-sizing: border-box;
+}
+
+.arc-wrap .arc-nav .arc-btn:hover,
+.arc-wrap .arc-nav .arc-btn:focus,
+.arc-wrap .arc-nav .arc-btn:active,
+.arc-wrap .arc-nav .arc-btn:focus-visible {
+  background: var(--arc-btn-hover);
+  outline: none;
+  box-shadow: none;
+}

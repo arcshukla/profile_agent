@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+.claude
+
+#chromadb
+.chromadb
+.chromadb_profile
+.chromadb_semantic
+.chromadb_test_engine
+
+#Test files
+test_rag_pipeline.py
+test_semantic_rag.py
+hf_deploy.ps1
+
+#logs
+logs/
+
+#docs
+docs/
