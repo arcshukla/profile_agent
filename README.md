@@ -1,13 +1,7 @@
----
-title: profile_agent
-app_file: app.py
-sdk: gradio
-sdk_version: 6.9.0
----
 
 # Profile Assistant AI — Talk to My Resume
 
-> An intelligent, conversational AI that lets anyone explore Archana Shukla's professional journey — experience, skills, achievements, and peer recommendations — through natural language.
+> An intelligent, conversational AI that lets anyone explore Archana Shukla's professional journey — experience, skills, achievements, and peer recommendations — through natural language. Try it - https://huggingface.co/spaces/arcshukla/profile_agent
 
 ---
 
